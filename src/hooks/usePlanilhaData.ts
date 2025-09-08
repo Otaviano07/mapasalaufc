@@ -1,7 +1,8 @@
 import { ref, onMounted } from 'vue';
 import Papa from 'papaparse';
 
-const PLANILHA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRYPBiypdSwCluFErtNcLrCR8Ey2J5ltpT9W8jxrbrTXIdJwAkBABE0xrZ8Ltk_dAhllelxTjN_Auv/pub?gid=221360036&single=true&output=tsv";
+const defaultPlanilhaUrl = import.meta.env.VITE_DEFAULT_PLANILHA_URL;
+const planilhaUrl = ref(defaultPlanilhaUrl as string);
 
 export interface Aula {
   bloco: string;
@@ -17,15 +18,21 @@ export interface Aula {
 
 export function usePlanilhaData() {
   const dados = ref<Aula[]>([]);
-  const carregando = ref(true);
+  const carregando = ref(false);
   const erro = ref<string | null>(null);
 
-  const carregarDados = async () => {
+  const carregarDados = async (url?: string) => {
+    const urlToFetch = url || planilhaUrl.value;
+    if (!urlToFetch) {
+      erro.value = "URL da planilha não definida.";
+      carregando.value = false;
+      return;
+    }
     try {
       carregando.value = true;
       erro.value = null;
 
-      const response = await fetch(PLANILHA_URL);
+      const response = await fetch(urlToFetch);
       if (!response.ok) {
         throw new Error('Erro ao carregar dados da planilha');
       }
@@ -46,7 +53,6 @@ export function usePlanilhaData() {
         transform: (value: string) => value.trim(),
         complete: (results) => {
           if (results.errors.length > 0) {
-            console.warn('Avisos durante o parse:', results.errors);
           }
           
           const dadosProcessados = results.data
@@ -67,20 +73,16 @@ export function usePlanilhaData() {
           carregando.value = false;
         },
         error: (error: any) => {
-          console.error('Erro no parse:', error);
           erro.value = 'Erro ao processar dados da planilha';
           carregando.value = false;
         }
       });
 
     } catch (error: any) {
-      console.error('Erro ao carregar planilha:', error);
       erro.value = 'Erro ao conectar com a planilha do Google Sheets';
       carregando.value = false;
     }
   };
 
-  onMounted(carregarDados);
-
-  return { dados, carregando, erro };
+  return { dados, carregando, erro, carregarDados };
 }

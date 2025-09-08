@@ -1,4 +1,3 @@
-
 <template>
     <footer class="footer">
         <p>Universidade Federal do Ceará - Campus de Russas</p>
@@ -8,24 +7,23 @@
 </template>
 
 <script setup lang="ts">
-// No script needed for this component
 </script>
 
 <style scoped>
 .footer {
-  margin-top: 2.5rem; /* Increased margin-top */
+  margin-top: 2.5rem;
   text-align: center;
-  font-size: 0.9rem; /* Slightly larger font */
+  font-size: 0.9rem;
   color: var(--color-text-light);
   background-color: white;
-  border-radius: 12px; /* More rounded */
-  padding: 1.75rem; /* Increased padding */
+  border-radius: 12px;
+  padding: 1.75rem;
   box-shadow: var(--shadow-sm);
   border: 1px solid #e9ecef;
 }
 
 .footer p {
-  margin-bottom: 0.6rem; /* Adjusted spacing */
+  margin-bottom: 0.6rem;
   line-height: 1.4;
 }
 

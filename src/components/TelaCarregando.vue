@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { Loader } from 'lucide-vue-next';
 </script>

@@ -34,19 +34,19 @@ defineEmits(['update:value']);
 }
 
 .filter-label {
-  font-size: 0.9rem; /* Slightly larger font */
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--color-text-light);
-  margin-bottom: 0.6rem; /* Adjusted spacing */
+  margin-bottom: 0.6rem;
 }
 
 .filter-input {
   width: 100%;
-  padding: 0.8rem 1rem; /* Adjusted padding */
-  border: 1px solid #dce0e6; /* Lighter border */
-  border-radius: 8px; /* More rounded */
+  padding: 0.8rem 1rem;
+  border: 1px solid #dce0e6;
+  border-radius: 8px;
   background-color: white;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   font-size: 1rem;
   color: var(--color-dark);
 }
@@ -54,6 +54,6 @@ defineEmits(['update:value']);
 .filter-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25); /* Updated shadow color */
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
 }
 </style>

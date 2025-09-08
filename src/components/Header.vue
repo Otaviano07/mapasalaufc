@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { MapPin } from 'lucide-vue-next';
 </script>
@@ -21,20 +20,20 @@ import { MapPin } from 'lucide-vue-next';
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2rem;
-  padding-bottom: 1.5rem; /* Add some padding at the bottom */
-  border-bottom: 1px solid #e9ecef; /* Subtle separator */
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .header__icon-wrapper {
   background-color: var(--color-primary);
   padding: 1rem;
-  border-radius: 10px; /* Slightly more rounded */
+  border-radius: 10px;
   box-shadow: var(--shadow-sm);
 }
 
 .header__icon {
   color: white;
-  width: 2.25rem; /* Slightly larger icon */
+  width: 2.25rem;
   height: 2.25rem;
 }
 
@@ -43,14 +42,14 @@ import { MapPin } from 'lucide-vue-next';
 }
 
 .header__title {
-  font-size: 1.8rem; /* Adjusted font size */
-  font-weight: 700; /* Bolder */
+  font-size: 1.8rem;
+  font-weight: 700;
   color: var(--color-dark);
-  margin-bottom: 0.3rem; /* Adjusted spacing */
+  margin-bottom: 0.3rem;
 }
 
 .header__subtitle {
-  font-size: 0.95rem; /* Adjusted font size */
+  font-size: 0.95rem;
   color: var(--color-text-light);
 }
 </style>
