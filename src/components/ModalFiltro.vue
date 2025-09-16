@@ -26,7 +26,7 @@ const props = defineProps<{
   isVisible: boolean;
 }>();
 
-const emit = defineEmits(['update:filtros', 'close']);
+const emit = defineEmits(['update:filtros', 'close', 'clear-filters']);
 
 const updateFiltro = (key: keyof Filtros, value: string) => {
   emit('update:filtros', { ...props.filtros, [key]: value });
@@ -107,6 +107,12 @@ const close = () => {
           listId="horas-list"
           :opcoes="opcoes.horas"
         />
+      </div>
+      <div class="modal-footer">
+        <button @click="emit('clear-filters'); close();" class="button-clear">
+          <X />
+          Limpar Filtros
+        </button>
       </div>
     </div>
   </div>
@@ -205,5 +211,33 @@ const close = () => {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.button-clear {
+  background-color: var(--color-secondary);
+  color: white;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6em 1.2em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 600;
+}
+
+.button-clear:hover {
+  background-color: #5a6268;
+  box-shadow: var(--shadow-md);
 }
 </style>

@@ -200,5 +200,56 @@ const handleToggleFavorite = () => {
   color: var(--color-dark);
 }
 
+@media (max-width: 480px) {
+  .aula-card {
+    padding: 0.8rem;
+  }
+
+  .aula-card__header {
+    padding: 0.8rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .aula-card__tags {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .aula-card__tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .aula-card__title {
+    font-size: 1.1rem;
+    padding: 0.8rem;
+  }
+
+  .aula-card__details {
+    padding: 0 0.8rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .aula-card__detail-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .aula-card__footer {
+    padding: 0.8rem;
+  }
+
+  .aula-card__course {
+    font-size: 0.8rem;
+  }
+
+  .favorite-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+}
+
 
 </style>

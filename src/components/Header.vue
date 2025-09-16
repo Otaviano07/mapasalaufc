@@ -52,4 +52,57 @@ import { MapPin } from 'lucide-vue-next';
   font-size: 0.95rem;
   color: var(--color-text-light);
 }
+
+@media (max-width: 768px) {
+  .header {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .header__icon-wrapper {
+    padding: 0.8rem;
+  }
+
+  .header__icon {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .header__title {
+    font-size: 1.5rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .header__icon-wrapper {
+    padding: 0.6rem;
+  }
+
+  .header__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .header__title {
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .header__subtitle {
+    font-size: 0.75rem;
+  }
+}
 </style>

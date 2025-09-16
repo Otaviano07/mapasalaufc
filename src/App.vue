@@ -87,6 +87,10 @@ const opcoes = computed(() => {
 });
 
 const isClassHappeningNow = (item: Aula) => {
+  if (!item || !item.dia || !item.horas) {
+    return false;
+  }
+
   const now = new Date();
   const dayOfWeek = now.getDay();
   const currentTime = now.getHours() * 100 + now.getMinutes();
@@ -105,10 +109,26 @@ const isClassHappeningNow = (item: Aula) => {
     return false;
   }
 
-  const [start, end] = item.horas.replace('h', '').split('-').map(time => {
-    const [hour, minute] = time.split(':').map(Number);
+  const timeParts = item.horas.replace(/h/g, '').split('-');
+  if (timeParts.length !== 2) {
+    return false;
+  }
+
+  const [startStr, endStr] = timeParts;
+  
+  const parseTime = (timeStr: string) => {
+    if (!timeStr) return NaN;
+    const [hour, minute] = timeStr.trim().split(':').map(Number);
+    if (isNaN(hour) || isNaN(minute)) return NaN;
     return hour * 100 + minute;
-  });
+  };
+
+  const start = parseTime(startStr);
+  const end = parseTime(endStr);
+
+  if (isNaN(start) || isNaN(end)) {
+    return false;
+  }
 
   return currentTime >= start && currentTime <= end;
 };
@@ -202,7 +222,7 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
               @click="mostrarApenasFavoritos = !mostrarApenasFavoritos; if (mostrarApenasFavoritos) mostrarApenasAgora = false;"
               :class="['button-filter', { 'button-filter--active': mostrarApenasFavoritos }]"
             >
-              <Star :fill="mostrarApenasFavoritos ? '#FFD700' : 'none'" :color="mostrarApenasFavoritos ? '#FFD700' : 'white'" />
+              <Star />
               Favoritos
             </button>
 
@@ -210,17 +230,8 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
               @click="mostrarApenasAgora = !mostrarApenasAgora; if (mostrarApenasAgora) mostrarApenasFavoritos = false;"
               :class="['button-filter', { 'button-filter--active': mostrarApenasAgora }]"
             >
-              <Clock :color="mostrarApenasAgora ? '#FFD700' : 'white'" />
+              <Clock />
               Agora
-            </button>
-
-            <button
-              v-if="temFiltrosAtivos"
-              @click="limparFiltros"
-              class="button-clear"
-            >
-              <X />
-              Limpar
             </button>
 
             <button
@@ -232,137 +243,194 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
             </button>
           </div>
 
-          <button @click="mostrarMenu = true" class="menu-button">
-            <Menu />
-          </button>
-
-          
-        </div>
-
-        <ModalFiltro 
-          :isVisible="mostrarModalFiltros"
-          :filtros="filtros" 
-          :opcoes="opcoes"
-          @update:filtros="Object.assign(filtros, $event)"
-          @close="mostrarModalFiltros = false"
-        />
-
-        <div v-if="mostrarMenu" class="menu-modal">
-          <div class="menu-modal-content">
-            <button @click="mostrarMenu = false" class="close-button">
-              <X />
+          <div class="menu-container">
+            <button @click="mostrarMenu = !mostrarMenu" class="menu-button">
+              <Menu />
             </button>
-            <div class="mobile-buttons">
-              <button
-                @click="mostrarModalFiltros = true; mostrarMenu = false;"
-                class="button-filter"
-              >
-                <Filter />
-                Filtros
-              </button>
 
-              <button
-                @click="mostrarApenasFavoritos = !mostrarApenasFavoritos; if (mostrarApenasFavoritos) mostrarApenasAgora = false; mostrarMenu = false;"
-                :class="['button-filter', { 'button-filter--active': mostrarApenasFavoritos }]"
-              >
-                <Star :fill="mostrarApenasFavoritos ? '#FFD700' : 'none'" :color="mostrarApenasFavoritos ? '#FFD700' : 'white'" />
-                Favoritos
-              </button>
+            <div v-if="mostrarMenu" class="menu-modal">
+              <div class="menu-modal-content">
+                <button @click="mostrarMenu = false" class="close-button">
+                  <X />
+                </button>
+                <div class="mobile-buttons">
+                  <button
+                    @click="mostrarModalFiltros = true; mostrarMenu = false;"
+                    class="button-filter"
+                  >
+                    <Filter />
+                    Filtros
+                  </button>
 
-              <button
-                @click="mostrarApenasAgora = !mostrarApenasAgora; if (mostrarApenasAgora) mostrarApenasFavoritos = false; mostrarMenu = false;"
-                :class="['button-filter', { 'button-filter--active': mostrarApenasAgora }]"
-              >
-                <Clock :color="mostrarApenasAgora ? '#FFD700' : 'white'" />
-                Agora
-              </button>
+                  <button
+                    @click="mostrarApenasFavoritos = !mostrarApenasFavoritos; if (mostrarApenasFavoritos) mostrarApenasAgora = false; mostrarMenu = false;"
+                    :class="['button-filter', { 'button-filter--active': mostrarApenasFavoritos }]"
+                  >
+                    <Star />
+                    Favoritos
+                  </button>
 
-              <button
-                v-if="temFiltrosAtivos"
-                @click="limparFiltros; mostrarMenu = false;"
-                class="button-clear"
-              >
-                <X />
-                Limpar
-              </button>
+                  <button
+                    @click="mostrarApenasAgora = !mostrarApenasAgora; if (mostrarApenasAgora) mostrarApenasFavoritos = false; mostrarMenu = false;"
+                    :class="['button-filter', { 'button-filter--active': mostrarApenasAgora }]"
+                  >
+                    <Clock />
+                    Agora
+                  </button>
 
-              <button
-                @click="carregarDados(); mostrarMenu = false;"
-                class="button-filter"
-              >
-                <RefreshCw />
-                Carregar
-              </button>
+                  <button
+                    @click="limparFiltros; mostrarMenu = false;"
+                    class="button-clear"
+                  >
+                    <X />
+                    Limpar
+                  </button>
+
+                  <button
+                    @click="carregarDados(); mostrarMenu = false;"
+                    class="button-filter"
+                  >
+                    <RefreshCw />
+                    Carregar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="results-section">
-        <div class="results-info">
-          <Search />
-          <span>{{ dadosFiltrados.length }} resultado(s) encontrado(s)</span>
-        </div>
-        <ResultadosLista 
-          :dados="dadosFiltrados" 
-          :isFavorited="isFavorited" 
-          :toggleFavorite="toggleFavorite" 
+        <ModalFiltro
+          :isVisible="mostrarModalFiltros"
+          :filtros="filtros"
+          :opcoes="opcoes"
+          @update:filtros="Object.assign(filtros, $event)"
+          @close="mostrarModalFiltros = false"
+          @clear-filters="limparFiltros"
         />
       </div>
 
-      <Footer />
-    </div>
-  </div>
+      <div class="results-section">
+        <ResultadosLista
+          :dados="dadosFiltrados"
+          :isFavorited="isFavorited"
+          @toggle-favorite="toggleFavorite"
+        />
+      </div>
 
-  <ModalQrAction
-    :isVisible="showQrActionModal"
-    :qrCodeData="scannedQrCodeData"
-    @close="showQrActionModal = false"
-    @view-file="handleViewFile"
-    @update-spreadsheet="handleUpdateSpreadsheet"
-  />
+    </div>
+      <Footer />
+  </div>
 </template>
 
-<style scoped>
+<style>
 .app-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f2f5;
 }
 
 .content-wrapper {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: var(--shadow-md);
-  padding: 2rem;
+  flex: 1;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .filters-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .filters-controls {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 
 .desktop-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.button-filter, .button-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background-color: #f1f3f5;
+  color: #343a40;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-filter:hover, .button-clear:hover {
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.button-filter--active {
+  background-color: #4C6EF5;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(76, 110, 245, 0.4);
+  transform: translateY(-1px);
+}
+
+.button-filter svg,
+.button-clear svg {
+  color: #495057;
+  transition: color 0.2s ease-in-out;
+}
+
+.button-filter--active svg {
+  color: #fff;
+}
+
+.button-filter--active .lucide-star {
+  fill: #fff;
+}
+
+.menu-container {
+  position: relative;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .menu-container {
+    display: none;
+  }
 }
 
 .menu-button {
-  display: none;
-  background-color: var(--color-primary);
-  color: white;
-  padding: 0.6em;
-  border-radius: 8px;
+  background: transparent;
+  border: none;
   cursor: pointer;
+  padding: 0.5rem;
+  color: #495057;
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-button:hover {
+  color: #4C6EF5;
+  background-color: #f1f3f5;
 }
 
 .menu-modal {
@@ -381,23 +449,20 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
 .menu-modal-content {
   background-color: white;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: var(--shadow-lg);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
-.menu-modal-content .close-button {
+.close-button {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.5rem;
+  right: 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 1.5rem;
-  color: var(--color-text-light);
 }
 
 .mobile-buttons {
@@ -406,75 +471,9 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
   gap: 1rem;
 }
 
-@media (max-width: 768px) {
-  .desktop-buttons {
-    display: none;
-  }
-
-  .menu-button {
-    display: flex;
-  }
-}
-
-.button-filter, .button-clear {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6em 1.2em;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  font-weight: 600;
-}
-
-.button-filter {
-  background-color: var(--color-primary);
-  color: white;
-  box-shadow: var(--shadow-sm);
-}
-
-.button-filter:hover {
-  background-color: var(--color-primary-dark);
-  box-shadow: var(--shadow-md);
-}
-
-.button-filter--active {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.button-filter--active:hover {
-  background-color: var(--color-primary-dark);
-}
-
-.button-clear {
-  background-color: var(--color-secondary);
-  color: white;
-  box-shadow: var(--shadow-sm);
-}
-
-.button-clear:hover {
-  background-color: #5a6268;
-  box-shadow: var(--shadow-md);
-}
-
-.update-info {
-  font-size: 0.875rem;
-  color: var(--color-text-light);
-}
-
 .results-section {
-  margin-top: 2rem;
-}
-
-.results-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-light);
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  font-weight: 500;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 4px;
 }
 </style>

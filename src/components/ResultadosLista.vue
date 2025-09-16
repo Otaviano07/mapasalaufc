@@ -118,4 +118,34 @@ const isClassHappeningNow = (item: Aula) => {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
+
+@media (max-width: 480px) {
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .no-results {
+    padding: 2rem;
+  }
+
+  .no-results__icon-wrapper {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .no-results__icon {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .no-results__title {
+    font-size: 1.1rem;
+  }
+
+  .no-results__text {
+    font-size: 0.9rem;
+  }
+}
 </style>
