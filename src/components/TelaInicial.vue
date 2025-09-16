@@ -115,4 +115,23 @@ p {
   background-color: #5a6268;
   box-shadow: var(--shadow-lg);
 }
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  .initial-screen-content {
+    padding: 2rem;
+  }
+  .action-button {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+}
 </style>

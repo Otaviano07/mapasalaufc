@@ -38,12 +38,6 @@ onMounted(() => {
   }
 });
 
-const getUserLocation = () => {
-  // Para o mapa esquemático, assumimos que a localização do usuário é um ponto padrão.
-  // Poderíamos usar a geolocalização real para tentar encontrar o ponto mais próximo.
-  origin.value = 'entrada_pici_1'; // Exemplo: define a entrada principal como origem padrão
-};
-
 const handleQrScanned = (qrData: string) => {
   // Assumimos que o QR code contém uma chave de localização válida (ex: 'ru', '910')
   if (locations[qrData]) {
@@ -81,10 +75,7 @@ const goBack = () => {
           </option>
         </select>
 
-        <button @click="getUserLocation" class="origin-button">
-          <User class="origin-icon" />
-          <span>Usar minha localização</span>
-        </button>
+
         <button @click="showScanner = true" class="origin-button">
           <QrCode class="origin-icon" />
           <span>Escanear QR Code de Origem</span>

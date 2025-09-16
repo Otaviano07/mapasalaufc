@@ -188,7 +188,7 @@ const handleToggleFavorite = () => {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  background-color: #e9ecef;
+  background-color: #fdfb65;
   color: #495057;
   font-weight: 500;
   text-decoration: none;
@@ -196,7 +196,7 @@ const handleToggleFavorite = () => {
 }
 
 .action-button:hover {
-  background-color: #dee2e6;
+  background-color: #91c4f7;
   color: #212529;
 }
 

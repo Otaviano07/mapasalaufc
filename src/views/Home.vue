@@ -261,14 +261,6 @@ const limparFiltros = () => {
                 </button>
 
                 <button
-                  @click="limparFiltros; mostrarMenu = false;"
-                  class="button-clear"
-                >
-                  <X />
-                  Limpar
-                </button>
-
-                <button
                   @click="carregarDados(); mostrarMenu = false;"
                   class="button-filter"
                 >
