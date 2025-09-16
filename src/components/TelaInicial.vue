@@ -25,7 +25,7 @@ const handleQrCodeScanned = (qrCodeData: string) => {
       <div class="button-group">
         <button @click="iniciarBusca" class="action-button primary">
           <Download />
-          Buscar Dados da Planilha
+          Buscar Dados
         </button>
         <button @click="showQrScanner = true" class="action-button secondary">
           <QrCode />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Calendar, Clock, Users, Star } from 'lucide-vue-next';
+import { Calendar, Clock, Users, Star, MapPin } from 'lucide-vue-next';
 import { computed } from 'vue';
 import type { Aula } from '../hooks/usePlanilhaData';
 
@@ -53,6 +53,13 @@ const handleToggleFavorite = () => {
       </div>
     </div>
 
+    <div class="aula-card__actions">
+      <router-link :to="`/local/${item.bloco}/${item.sala}`" class="action-button" v-if="item.bloco && item.sala">
+        <MapPin class="action-button__icon" />
+        <span>Como chegar</span>
+      </router-link>
+    </div>
+
     <div v-if="item.curso" class="aula-card__footer">
       <span class="aula-card__course">Turma: {{ item.curso }}</span>
     </div>
@@ -67,11 +74,9 @@ const handleToggleFavorite = () => {
   border: 1px solid #e9ecef;
   overflow: hidden;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
-
-
-
-
 
 .aula-card--favorited {
   border-color: #FFD700;
@@ -120,6 +125,7 @@ const handleToggleFavorite = () => {
 .aula-card__tags {
   display: flex;
   gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .aula-card__tag {
@@ -144,16 +150,12 @@ const handleToggleFavorite = () => {
   color: var(--color-secondary);
 }
 
-.aula-card__tag--extra {
-  background-color: #fff3cd;
-  color: var(--color-warning);
-}
-
 .aula-card__title {
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--color-dark);
   padding: 1.25rem;
+  flex-grow: 1;
 }
 
 .aula-card__details {
@@ -176,16 +178,31 @@ const handleToggleFavorite = () => {
   height: 1.1rem;
 }
 
-.aula-card__detail-icon--blue {
-  color: var(--color-primary);
+.aula-card__actions {
+  padding: 0 1.25rem 1.25rem;
 }
 
-.aula-card__detail-icon--green {
-  color: var(--color-success);
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: #e9ecef;
+  color: #495057;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
 }
 
-.aula-card__detail-icon--purple {
-  color: #8a2be2;
+.action-button:hover {
+  background-color: #dee2e6;
+  color: #212529;
+}
+
+.action-button__icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 .aula-card__footer {
@@ -201,25 +218,8 @@ const handleToggleFavorite = () => {
 }
 
 @media (max-width: 480px) {
-  .aula-card {
-    padding: 0.8rem;
-  }
-
   .aula-card__header {
     padding: 0.8rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .aula-card__tags {
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .aula-card__tag {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.6rem;
   }
 
   .aula-card__title {
@@ -232,24 +232,8 @@ const handleToggleFavorite = () => {
     font-size: 0.85rem;
   }
 
-  .aula-card__detail-icon {
-    width: 1rem;
-    height: 1rem;
-  }
-
   .aula-card__footer {
     padding: 0.8rem;
   }
-
-  .aula-card__course {
-    font-size: 0.8rem;
-  }
-
-  .favorite-icon {
-    width: 1.2rem;
-    height: 1.2rem;
-  }
 }
-
-
 </style>
