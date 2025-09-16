@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
-import { Search, Filter, X } from 'lucide-vue-next';
+import { Search, Filter, X, Star, Clock, RefreshCw, Menu } from 'lucide-vue-next';
 
 import { usePlanilhaData, type Aula } from './hooks/usePlanilhaData';
 import { useDebounce } from './hooks/useDebounce';
@@ -60,6 +60,7 @@ const filtros = reactive({
 const mostrarModalFiltros = ref(false);
 const mostrarApenasFavoritos = ref(false);
 const mostrarApenasAgora = ref(false);
+const mostrarMenu = ref(false);
 
 const filtrosRef = ref(filtros);
 const debouncedFiltros = useDebounce(filtrosRef, 300);
@@ -84,6 +85,33 @@ const opcoes = computed(() => {
     blocos: Array.from(blocos).sort()
   };
 });
+
+const isClassHappeningNow = (item: Aula) => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const currentTime = now.getHours() * 100 + now.getMinutes();
+
+  const dayMap: { [key: string]: number } = {
+    'Domingo': 0,
+    'Segunda': 1,
+    'Terça': 2,
+    'Quarta': 3,
+    'Quinta': 4,
+    'Sexta': 5,
+    'Sábado': 6,
+  };
+
+  if (dayMap[item.dia] !== dayOfWeek) {
+    return false;
+  }
+
+  const [start, end] = item.horas.replace('h', '').split('-').map(time => {
+    const [hour, minute] = time.split(':').map(Number);
+    return hour * 100 + minute;
+  });
+
+  return currentTime >= start && currentTime <= end;
+};
 
 const dadosFiltrados = computed(() => {
   if (!dados.value) return [];
@@ -128,7 +156,6 @@ const dadosFiltrados = computed(() => {
       return a.disciplina.localeCompare(b.disciplina);
     });
   } else if (mostrarApenasAgora.value) {
-    console.log('Filtering for current time classes...');
     filtered = filtered.filter(item => isClassHappeningNow(item));
   }
 
@@ -162,37 +189,51 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
 
       <div class="filters-section">
         <div class="filters-controls">
-          <button
-            @click="mostrarModalFiltros = true"
-            class="button-filter"
-          >
-            <Filter />
-            Filtros
-          </button>
+          <div class="desktop-buttons">
+            <button
+              @click="mostrarModalFiltros = true"
+              class="button-filter"
+            >
+              <Filter />
+              Filtros
+            </button>
 
-          <button
-            @click="mostrarApenasFavoritos = !mostrarApenasFavoritos; if (mostrarApenasFavoritos) mostrarApenasAgora = false;"
-            :class="['button-filter', { 'button-filter--active': mostrarApenasFavoritos }]"
-          >
-            <Star :fill="mostrarApenasFavoritos ? '#FFD700' : 'none'" :color="mostrarApenasFavoritos ? '#FFD700' : 'white'" />
-            Favoritos
-          </button>
+            <button
+              @click="mostrarApenasFavoritos = !mostrarApenasFavoritos; if (mostrarApenasFavoritos) mostrarApenasAgora = false;"
+              :class="['button-filter', { 'button-filter--active': mostrarApenasFavoritos }]"
+            >
+              <Star :fill="mostrarApenasFavoritos ? '#FFD700' : 'none'" :color="mostrarApenasFavoritos ? '#FFD700' : 'white'" />
+              Favoritos
+            </button>
 
-          <button
-            @click="mostrarApenasAgora = !mostrarApenasAgora; if (mostrarApenasAgora) mostrarApenasFavoritos = false; console.log('mostrarApenasAgora toggled:', mostrarApenasAgora.value);"
-            :class="['button-filter', { 'button-filter--active': mostrarApenasAgora }]"
-          >
-            <Clock :color="mostrarApenasAgora ? '#FFD700' : 'white'" />
-            Agora
-          </button>
+            <button
+              @click="mostrarApenasAgora = !mostrarApenasAgora; if (mostrarApenasAgora) mostrarApenasFavoritos = false;"
+              :class="['button-filter', { 'button-filter--active': mostrarApenasAgora }]"
+            >
+              <Clock :color="mostrarApenasAgora ? '#FFD700' : 'white'" />
+              Agora
+            </button>
 
-          <button
-            v-if="temFiltrosAtivos"
-            @click="limparFiltros"
-            class="button-clear"
-          >
-            <X />
-            Limpar
+            <button
+              v-if="temFiltrosAtivos"
+              @click="limparFiltros"
+              class="button-clear"
+            >
+              <X />
+              Limpar
+            </button>
+
+            <button
+              @click="carregarDados()"
+              class="button-filter"
+            >
+              <RefreshCw />
+              Carregar
+            </button>
+          </div>
+
+          <button @click="mostrarMenu = true" class="menu-button">
+            <Menu />
           </button>
 
           
@@ -205,6 +246,56 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
           @update:filtros="Object.assign(filtros, $event)"
           @close="mostrarModalFiltros = false"
         />
+
+        <div v-if="mostrarMenu" class="menu-modal">
+          <div class="menu-modal-content">
+            <button @click="mostrarMenu = false" class="close-button">
+              <X />
+            </button>
+            <div class="mobile-buttons">
+              <button
+                @click="mostrarModalFiltros = true; mostrarMenu = false;"
+                class="button-filter"
+              >
+                <Filter />
+                Filtros
+              </button>
+
+              <button
+                @click="mostrarApenasFavoritos = !mostrarApenasFavoritos; if (mostrarApenasFavoritos) mostrarApenasAgora = false; mostrarMenu = false;"
+                :class="['button-filter', { 'button-filter--active': mostrarApenasFavoritos }]"
+              >
+                <Star :fill="mostrarApenasFavoritos ? '#FFD700' : 'none'" :color="mostrarApenasFavoritos ? '#FFD700' : 'white'" />
+                Favoritos
+              </button>
+
+              <button
+                @click="mostrarApenasAgora = !mostrarApenasAgora; if (mostrarApenasAgora) mostrarApenasFavoritos = false; mostrarMenu = false;"
+                :class="['button-filter', { 'button-filter--active': mostrarApenasAgora }]"
+              >
+                <Clock :color="mostrarApenasAgora ? '#FFD700' : 'white'" />
+                Agora
+              </button>
+
+              <button
+                v-if="temFiltrosAtivos"
+                @click="limparFiltros; mostrarMenu = false;"
+                class="button-clear"
+              >
+                <X />
+                Limpar
+              </button>
+
+              <button
+                @click="carregarDados(); mostrarMenu = false;"
+                class="button-filter"
+              >
+                <RefreshCw />
+                Carregar
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="results-section">
@@ -253,16 +344,83 @@ const temFiltrosAtivos = computed(() => Object.values(filtros).some(f => f));
 
 .filters-controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.desktop-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.menu-button {
+  display: none;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.6em;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.menu-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.menu-modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.menu-modal-content .close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--color-text-light);
+}
+
+.mobile-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .desktop-buttons {
+    display: none;
+  }
+
+  .menu-button {
+    display: flex;
+  }
 }
 
 .button-filter, .button-clear {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
+  padding: 0.6em 1.2em;
   border: none;
   border-radius: 8px;
   cursor: pointer;

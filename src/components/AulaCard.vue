@@ -25,11 +25,13 @@ const handleToggleFavorite = () => {
     <div class="aula-card__header">
       <div class="aula-card__tags">
         <span class="aula-card__tag aula-card__tag--sala">{{ item.sala }}</span>
+        <span class="aula-card__tag aula-card__tag--bloco">Bloco {{ item.bloco }}</span>
         <span v-if="item.unidade" class="aula-card__tag aula-card__tag--unidade">Unidade {{ item.unidade }}</span>
       </div>
       <button @click="handleToggleFavorite" class="favorite-button">
         <Star :fill="isFavorited ? '#FFD700' : 'none'" :color="isFavorited ? '#FFD700' : '#6c757d'" class="favorite-icon" />
       </button>
+      
     </div>
 
     <h3 class="aula-card__title">{{ item.disciplina }}</h3>
@@ -67,6 +69,10 @@ const handleToggleFavorite = () => {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
+
+
+
+
 .aula-card--favorited {
   border-color: #FFD700;
   box-shadow: 0 0 0 2px #FFD700, var(--shadow-md);
@@ -81,6 +87,26 @@ const handleToggleFavorite = () => {
 .aula-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
+}
+
+.favorite-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.favorite-button:hover {
+  transform: scale(1.1);
+}
+
+.favorite-icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .aula-card__header {
@@ -106,6 +132,11 @@ const handleToggleFavorite = () => {
 .aula-card__tag--sala {
   background-color: #e0f2f7;
   color: #0056b3;
+}
+
+.aula-card__tag--bloco {
+  background-color: #d1e7dd;
+  color: #0f5132;
 }
 
 .aula-card__tag--unidade {
@@ -169,23 +200,5 @@ const handleToggleFavorite = () => {
   color: var(--color-dark);
 }
 
-.favorite-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease-in-out;
-}
 
-.favorite-button:hover {
-  transform: scale(1.1);
-}
-
-.favorite-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-}
 </style>
