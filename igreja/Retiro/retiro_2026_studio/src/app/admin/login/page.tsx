@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-import { supabase } from '@/lib/supabaseClient';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -41,16 +42,9 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) {
-        setError(error.message);
-      } else {
-        router.push('/admin');
-      }
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      // User signed in successfully
+      router.push('/admin');
     } catch (err: any) {
       setError(err.message);
     } finally {
