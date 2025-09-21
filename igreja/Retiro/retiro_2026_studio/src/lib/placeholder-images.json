@@ -1,0 +1,40 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-retreat",
+      "description": "A beautiful, serene landscape for the hero section.",
+      "imageUrl": "https://picsum.photos/seed/retreat/1920/1080",
+      "imageHint": "nature landscape"
+    },
+    {
+      "id": "gallery-1",
+      "description": "People in a community setting.",
+      "imageUrl": "https://picsum.photos/seed/people1/600/400",
+      "imageHint": "people community"
+    },
+    {
+      "id": "gallery-2",
+      "description": "People in worship.",
+      "imageUrl": "https://picsum.photos/seed/people2/600/400",
+      "imageHint": "spiritual worship"
+    },
+    {
+      "id": "gallery-3",
+      "description": "People studying in nature.",
+      "imageUrl": "https://picsum.photos/seed/people3/600/400",
+      "imageHint": "nature study"
+    },
+    {
+      "id": "gallery-4",
+      "description": "A scenic view from the retreat location.",
+      "imageUrl": "https://picsum.photos/seed/scenic4/600/400",
+      "imageHint": "scenic view"
+    },
+    {
+      "id": "church-logo",
+      "description": "Placeholder logo for the church.",
+      "imageUrl": "https://picsum.photos/seed/logo/100/100",
+      "imageHint": "cross logo"
+    }
+  ]
+}
